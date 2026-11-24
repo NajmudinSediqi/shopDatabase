@@ -1,0 +1,1 @@
+ALTER TABLE settings ADD COLUMN assistant_enabled BOOLEAN NOT NULL DEFAULT TRUE;

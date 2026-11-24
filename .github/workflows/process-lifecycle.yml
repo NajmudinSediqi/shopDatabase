@@ -1,0 +1,65 @@
+name: Isolated Linux process lifecycle
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  process-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out maintained sources
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Confirm Linux and Node.js 24
+        run: |
+          node -e "const a=require('node:assert/strict'); a.equal(process.platform,'linux'); a.equal(process.versions.node.split('.')[0],'24'); console.log(process.platform,process.version)"
+
+      # Node core modules and local HTTP fixtures only: no npm install, build,
+      # MySQL, deployment step, production URL, environment or repository secrets.
+      - name: Run isolated lifecycle and SIGKILL tests
+        id: tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          ulimit -c 0
+          mkdir -p test-results
+          node --test --test-concurrency=1 --test-timeout=60000 --test-reporter=tap \
+            backend/test/cpanel-launcher.test.mjs \
+            backend/test/cpanel-parent-loss.test.mjs \
+            | tee test-results/process-lifecycle.tap
+
+      - name: Record actual result
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+        run: |
+          {
+            echo '## Isolated Linux process tests'
+            echo "Test step outcome: ${TEST_OUTCOME:-not run}"
+            echo 'Runner: Ubuntu 24.04; requested runtime: Node.js 24.'
+            echo 'The managed SIGKILL test checks both recorded child PIDs and both service ports within 5 seconds, over five cycles.'
+            echo 'An exited zombie waiting for init to reap it is recorded as exited, not as a running service.'
+            echo 'See the TAP log for per-cycle parent/child PIDs, exit timing, failures and skipped cases.'
+            echo 'No production credentials, database, site or deployment were used.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save isolated test log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-process-lifecycle-${{ github.run_id }}
+          path: test-results/process-lifecycle.tap
+          if-no-files-found: warn
+          retention-days: 7

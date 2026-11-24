@@ -1,0 +1,8 @@
+{
+  "name": "noordb-deployment",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "start": "node app.cjs", "migrate": "node --env-file-if-exists=.env backend/src/migrate.mjs" },
+  "dependencies": { "mysql2": "^3.24.6", "nodemailer": "^7.0.0" },
+  "engines": { "node": ">=22.12.0" }
+}

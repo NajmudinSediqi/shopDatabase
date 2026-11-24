@@ -1,0 +1,19 @@
+{
+  "sales.create": ["sales.view"],
+  "sales.manage": ["sales.view"],
+  "purchases.create": ["purchases.view"],
+  "purchases.manage": ["purchases.view"],
+  "customers.manage": ["customers.view"],
+  "customers.payments.manage": ["customers.view"],
+  "suppliers.manage": ["suppliers.view"],
+  "suppliers.payments.manage": ["suppliers.view"],
+  "expenses.manage": ["expenses.view"],
+  "withdrawals.manage": ["withdrawals.view"],
+  "employees.manage": ["employees.view"],
+  "payroll.view": ["employees.view"],
+  "payroll.manage": ["payroll.view"],
+  "products.manage": ["products.view"],
+  "categories.manage": ["products.view"],
+  "stock.manage": ["stock.view"],
+  "bill.settings.manage": ["sales.view"]
+}

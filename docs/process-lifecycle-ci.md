@@ -36,3 +36,18 @@ Linux/Node version. It does not verify Namecheap's modified lsnode, production
 load, account resource limits, or frozen/blocked child event loops. No production
 server is involved. Record the run URL and commit SHA when reporting a result;
 until a run completes, Linux verification remains pending.
+
+## Verified run ? 2026-11-24
+
+- Repository: https://github.com/NajmudinSediqi/shopDatabase
+- Run: https://github.com/NajmudinSediqi/shopDatabase/actions/runs/45349455731
+- Tested commit: `d23dc3ef32663dfc8e79794493876c360a98c8cb`
+- Runner: Ubuntu 24.04; actual Node.js version: **24.22.3**.
+- Actual result: **12 passed, 0 failed, 0 skipped**.
+- Both managed children exited and both ports closed after launcher SIGKILL in
+  **32, 31, 28, 28 and 28 milliseconds** over the five cycles (5000ms limit).
+- Linux real SIGTERM/SIGHUP and the unguarded-survival baseline also passed.
+- The run uploaded its TAP log. No production credentials or server were used.
+
+This replaces the earlier pending Linux status. Native SIGABRT and behavior
+inside Namecheap's modified lsnode were not directly tested by this run.
